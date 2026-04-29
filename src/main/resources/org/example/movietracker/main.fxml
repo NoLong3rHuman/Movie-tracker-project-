@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 
 <BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="MainController" style="-fx-background-color: #f9fafb;">
+            fx:controller="org.example.movietracker.MainController" style="-fx-background-color: #f9fafb;">
 
     <top>
         <VBox spacing="15" style="-fx-background-color: white;">

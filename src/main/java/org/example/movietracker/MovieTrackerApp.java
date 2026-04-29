@@ -42,7 +42,15 @@ public class MovieTrackerApp extends Application {
         return currentUser;
     }
 
+
+
     public static void main(String[] args) {
+        MovieDatabase db = new MovieDatabase();
+
+        Movie test = new Movie("Inception", "2010", "", 5, true);
+
+        db.insertMovie(test);
+
         launch(args);
     }
 }

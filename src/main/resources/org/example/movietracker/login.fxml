@@ -6,7 +6,7 @@
 <?import javafx.scene.text.*?>
 
 <VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="LoginController" alignment="CENTER" spacing="20"
+      fx:controller="org.example.movietracker.LoginController" alignment="CENTER" spacing="20"
       style="-fx-background-color: linear-gradient(to bottom right, #3b82f6, #9333ea);">
 
     <padding>

@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 
 <VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="AddMovieDialogController" spacing="15"
+      fx:controller="org.example.movietracker.AddMovieDialogController" spacing="15"
       style="-fx-background-color: white; -fx-padding: 20;">
 
     <Label text="Add New Movie" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>

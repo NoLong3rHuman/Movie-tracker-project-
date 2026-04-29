@@ -14,7 +14,13 @@ public class Movie {
         this.rating = 0;
         this.watched = false;
     }
-
+    public Movie(String title, String year, String posterUrl, int rating, boolean watched) {
+        this.title = title;
+        this.year = year;
+        this.posterUrl = posterUrl;
+        this.rating = rating;
+        this.watched = watched;
+    }
     // Getters
     public String getTitle() { return title; }
     public String getYear() { return year; }
