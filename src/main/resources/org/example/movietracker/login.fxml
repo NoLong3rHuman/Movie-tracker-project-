@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="LoginController" alignment="CENTER" spacing="20"
+      style="-fx-background-color: linear-gradient(to bottom right, #3b82f6, #9333ea);">
+
+    <padding>
+        <Insets top="40" right="40" bottom="40" left="40"/>
+    </padding>
+
+    <VBox maxWidth="400" spacing="15"
+          style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 30;">
+
+        <Label text="Movie Tracker" style="-fx-font-size: 28px; -fx-font-weight: bold;"/>
+
+        <Label text="Track and rate your favorite movies" style="-fx-text-fill: gray;"/>
+
+        <VBox spacing="5">
+            <Label text="Email" style="-fx-font-weight: bold;"/>
+            <TextField fx:id="emailField" promptText="Enter your email"
+                       style="-fx-pref-height: 40px;"/>
+        </VBox>
+
+        <VBox spacing="5">
+            <Label text="Password" style="-fx-font-weight: bold;"/>
+            <PasswordField fx:id="passwordField" promptText="Enter your password"
+                           style="-fx-pref-height: 40px;"/>
+        </VBox>
+
+        <Button fx:id="loginButton" text="Sign In" maxWidth="Infinity"
+                onAction="#handleLogin"
+                style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-pref-height: 40px; -fx-font-size: 14px;"/>
+
+        <Separator/>
+
+        <Label text="Demo: Use any email and password to login"
+               style="-fx-text-fill: gray; -fx-font-size: 11px;" alignment="CENTER"/>
+    </VBox>
+</VBox>

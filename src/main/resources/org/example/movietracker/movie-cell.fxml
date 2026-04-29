@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<HBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      spacing="15" alignment="CENTER_LEFT"
+      style="-fx-background-color: white; -fx-background-radius: 5; -fx-padding: 10;">
+
+    <VBox spacing="5">
+        <Label fx:id="titleLabel" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+        <Label fx:id="yearLabel" style="-fx-text-fill: gray; -fx-font-size: 12px;"/>
+    </VBox>
+
+    <Region HBox.hgrow="ALWAYS"/>
+
+    <HBox fx:id="ratingBox" spacing="5"/>
+
+    <CheckBox fx:id="watchedCheckBox" text="Watched"
+              style="-fx-text-fill: green;"/>
+
+    <Button fx:id="deleteButton" text="Delete"
+            style="-fx-background-color: #ef4444; -fx-text-fill: white;"/>
+</HBox>

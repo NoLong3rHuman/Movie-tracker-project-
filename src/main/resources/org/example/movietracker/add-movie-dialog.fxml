@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="AddMovieDialogController" spacing="15"
+      style="-fx-background-color: white; -fx-padding: 20;">
+
+    <Label text="Add New Movie" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+
+    <VBox spacing="5">
+        <Label text="Title *" style="-fx-font-weight: bold;"/>
+        <TextField fx:id="titleField" promptText="Enter movie title"/>
+    </VBox>
+
+    <VBox spacing="5">
+        <Label text="Year *" style="-fx-font-weight: bold;"/>
+        <TextField fx:id="yearField" promptText="e.g., 2024"/>
+    </VBox>
+
+    <VBox spacing="5">
+        <Label text="Poster URL (optional)" style="-fx-font-weight: bold;"/>
+        <TextField fx:id="posterField" promptText="https://example.com/poster.jpg"/>
+    </VBox>
+
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button fx:id="cancelButton" text="Cancel" onAction="#handleCancel"
+                style="-fx-background-color: #e5e7eb;"/>
+        <Button fx:id="addButton" text="Add Movie" onAction="#handleAdd"
+                style="-fx-background-color: #3b82f6; -fx-text-fill: white;"/>
+    </HBox>
+</VBox>

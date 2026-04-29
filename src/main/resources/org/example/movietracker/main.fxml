@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="MainController" style="-fx-background-color: #f9fafb;">
+
+    <top>
+        <VBox spacing="15" style="-fx-background-color: white;">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+
+            <!-- Header -->
+            <HBox spacing="15" alignment="CENTER_LEFT">
+                <VBox spacing="5">
+                    <Label text="My Movie Tracker"
+                           style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+                    <Label fx:id="emailLabel" style="-fx-text-fill: gray; -fx-font-size: 12px;"/>
+                </VBox>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <Button fx:id="logoutButton" text="Logout" onAction="#handleLogout"
+                        style="-fx-background-color: #e5e7eb; -fx-cursor: hand;"/>
+            </HBox>
+
+            <!-- Controls -->
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <TextField fx:id="searchField" promptText="Search movies..."
+                           prefWidth="300" onKeyReleased="#handleSearch"/>
+
+                <Button fx:id="allFilterButton" text="All" onAction="#handleAllFilter"
+                        style="-fx-background-color: #3b82f6; -fx-text-fill: white;"/>
+                <Button fx:id="watchedFilterButton" text="Watched" onAction="#handleWatchedFilter"
+                        style="-fx-background-color: #e5e7eb;"/>
+                <Button fx:id="unwatchedFilterButton" text="To Watch" onAction="#handleUnwatchedFilter"
+                        style="-fx-background-color: #e5e7eb;"/>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <Button fx:id="addMovieButton" text="+ Add Movie" onAction="#handleAddMovie"
+                        style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-font-weight: bold;"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <ListView fx:id="movieListView" style="-fx-background-color: transparent;">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+        </ListView>
+    </center>
+</BorderPane>
