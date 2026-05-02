@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 
 <VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="org.example.movietracker.LoginController" alignment="CENTER" spacing="20"
+      fx:controller="org.example.movietracker.RegisterController" alignment="CENTER" spacing="20"
       style="-fx-background-color: linear-gradient(to bottom right, #3b82f6, #9333ea);">
 
     <padding>
@@ -15,9 +15,9 @@
     <VBox maxWidth="400" spacing="15"
           style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 30;">
 
-        <Label text="Movie Tracker" style="-fx-font-size: 28px; -fx-font-weight: bold;"/>
+        <Label text="Create Account" style="-fx-font-size: 28px; -fx-font-weight: bold;"/>
 
-        <Label text="Track and rate your favorite movies" style="-fx-text-fill: gray;"/>
+        <Label text="Start tracking your movies and shows" style="-fx-text-fill: gray;"/>
 
         <VBox spacing="5">
             <Label text="Email" style="-fx-font-weight: bold;"/>
@@ -27,18 +27,24 @@
 
         <VBox spacing="5">
             <Label text="Password" style="-fx-font-weight: bold;"/>
-            <PasswordField fx:id="passwordField" promptText="Enter your password"
+            <PasswordField fx:id="passwordField" promptText="At least 6 characters"
                            style="-fx-pref-height: 40px;"/>
         </VBox>
 
-        <Button fx:id="loginButton" text="Sign In" maxWidth="Infinity"
-                onAction="#handleLogin"
+        <VBox spacing="5">
+            <Label text="Confirm Password" style="-fx-font-weight: bold;"/>
+            <PasswordField fx:id="confirmPasswordField" promptText="Re-enter your password"
+                           style="-fx-pref-height: 40px;"/>
+        </VBox>
+
+        <Button text="Create Account" maxWidth="Infinity"
+                onAction="#handleRegister"
                 style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-pref-height: 40px; -fx-font-size: 14px; -fx-cursor: hand;"/>
 
         <Separator/>
 
-        <Button text="Don't have an account? Register" maxWidth="Infinity"
-                onAction="#handleRegister"
+        <Button text="Already have an account? Sign In" maxWidth="Infinity"
+                onAction="#handleBackToLogin"
                 style="-fx-background-color: transparent; -fx-text-fill: #3b82f6; -fx-border-color: #3b82f6; -fx-border-radius: 5; -fx-pref-height: 36px; -fx-cursor: hand;"/>
 
     </VBox>
