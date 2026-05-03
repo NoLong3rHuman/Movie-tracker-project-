@@ -11,7 +11,7 @@ public class MovieDatabase {
                     "?useSSL=true&requireSSL=true&verifyServerCertificate=false&serverTimezone=UTC";
 
     final static String USERNAME = "pined20";
-    final static String PASSWORD = "YOUR_PASSWORD"; // put your real password here
+    final static String PASSWORD = "Skyluvsme24";
 
     // ---------- CONNECT + CREATE TABLE ----------
     public void connectToDatabase() {
