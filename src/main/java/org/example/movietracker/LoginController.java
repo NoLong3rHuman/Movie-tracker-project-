@@ -10,39 +10,17 @@ public class LoginController {
 
     @FXML
     private void handleLogin() {
-        String email = emailField.getText().trim();
+        String email = emailField.getText();
         String password = passwordField.getText();
 
         if (email.isEmpty() || password.isEmpty()) {
-            showAlert(Alert.AlertType.WARNING, "Please enter your email and password.");
-            return;
-        }
-
-        MovieDatabase db = new MovieDatabase();
-
-        if (!db.testConnection()) {
-            showAlert(Alert.AlertType.ERROR, "Cannot connect to the database. Please check your connection settings.");
-            return;
-        }
-
-        User user = db.authenticateUser(email, password);
-
-        if (user == null) {
-            showAlert(Alert.AlertType.ERROR, "Invalid email or password.");
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Login Failed");
+            alert.setHeaderText("Please enter email and password");
+            alert.showAndWait();
         } else {
+            User user = new User(email);
             MovieTrackerApp.showMainScreen(user);
         }
-    }
-
-    @FXML
-    private void handleRegister() {
-        MovieTrackerApp.showRegisterScreen();
-    }
-
-    private void showAlert(Alert.AlertType type, String message) {
-        Alert alert = new Alert(type);
-        alert.setTitle("Login");
-        alert.setHeaderText(message);
-        alert.showAndWait();
     }
 }

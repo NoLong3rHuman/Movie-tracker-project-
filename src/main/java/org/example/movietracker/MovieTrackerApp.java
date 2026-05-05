@@ -27,16 +27,6 @@ public class MovieTrackerApp extends Application {
         }
     }
 
-    public static void showRegisterScreen() {
-        try {
-            FXMLLoader loader = new FXMLLoader(MovieTrackerApp.class.getResource("register.fxml"));
-            Scene scene = new Scene(loader.load(), 800, 600);
-            primaryStage.setScene(scene);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     public static void showMainScreen(User user) {
         try {
             currentUser = user;
@@ -52,7 +42,15 @@ public class MovieTrackerApp extends Application {
         return currentUser;
     }
 
+
+
     public static void main(String[] args) {
+        MovieDatabase db = new MovieDatabase();
+
+        Movie test = new Movie("Inception", "2010", "", 5, true);
+
+        db.insertMovie(test);
+
         launch(args);
     }
 }

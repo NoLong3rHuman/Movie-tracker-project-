@@ -37,7 +37,3 @@ build/
 
 ### Mac OS ###
 .DS_Store
-
-### Derby (local embedded database — not committed) ###
-derby.log
-movietrackerdb/

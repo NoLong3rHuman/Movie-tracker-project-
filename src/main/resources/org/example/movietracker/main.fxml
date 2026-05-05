@@ -5,147 +5,53 @@
 <?import javafx.scene.layout.*?>
 
 <BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="org.example.movietracker.MainController"
-            style="-fx-background-color: #f9fafb;">
+            fx:controller="org.example.movietracker.MainController" style="-fx-background-color: #f9fafb;">
 
-    <!-- TOP HEADER -->
     <top>
-        <HBox alignment="CENTER_LEFT" spacing="15"
-              style="-fx-background-color: white; -fx-border-color: #e5e7eb; -fx-border-width: 0 0 1 0;">
-            <padding><Insets top="15" right="20" bottom="15" left="20"/></padding>
-            <Label text="Movie Tracker" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
-            <Region HBox.hgrow="ALWAYS"/>
-            <Label fx:id="emailLabel" style="-fx-text-fill: gray; -fx-font-size: 12px;"/>
-            <Button text="Logout" onAction="#handleLogout"
-                    style="-fx-background-color: #e5e7eb; -fx-cursor: hand;"/>
-        </HBox>
+        <VBox spacing="15" style="-fx-background-color: white;">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+
+            <!-- Header -->
+            <HBox spacing="15" alignment="CENTER_LEFT">
+                <VBox spacing="5">
+                    <Label text="My Movie Tracker"
+                           style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+                    <Label fx:id="emailLabel" style="-fx-text-fill: gray; -fx-font-size: 12px;"/>
+                </VBox>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <Button fx:id="logoutButton" text="Logout" onAction="#handleLogout"
+                        style="-fx-background-color: #e5e7eb; -fx-cursor: hand;"/>
+            </HBox>
+
+            <!-- Controls -->
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <TextField fx:id="searchField" promptText="Search movies..."
+                           prefWidth="300" onKeyReleased="#handleSearch"/>
+
+                <Button fx:id="allFilterButton" text="All" onAction="#handleAllFilter"
+                        style="-fx-background-color: #3b82f6; -fx-text-fill: white;"/>
+                <Button fx:id="watchedFilterButton" text="Watched" onAction="#handleWatchedFilter"
+                        style="-fx-background-color: #e5e7eb;"/>
+                <Button fx:id="unwatchedFilterButton" text="To Watch" onAction="#handleUnwatchedFilter"
+                        style="-fx-background-color: #e5e7eb;"/>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <Button fx:id="addMovieButton" text="+ Add Movie" onAction="#handleAddMovie"
+                        style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-font-weight: bold;"/>
+            </HBox>
+        </VBox>
     </top>
 
-    <!-- LEFT SIDEBAR -->
-    <left>
-        <VBox spacing="5" prefWidth="200"
-              style="-fx-background-color: #1e3a5f;">
-            <padding><Insets top="25" right="10" bottom="25" left="10"/></padding>
-
-            <Label text="NAVIGATION"
-                   style="-fx-text-fill: #94a3b8; -fx-font-size: 10px; -fx-font-weight: bold; -fx-padding: 0 0 5 5;"/>
-
-            <Button fx:id="myListNavBtn" text="My List" maxWidth="Infinity"
-                    onAction="#showMyListSection"
-                    style="-fx-background-color: white; -fx-text-fill: #1e3a5f; -fx-font-weight: bold; -fx-background-radius: 5; -fx-pref-height: 38px; -fx-cursor: hand;"/>
-
-            <Button fx:id="addMovieNavBtn" text="Add Movie / Show" maxWidth="Infinity"
-                    onAction="#showAddMovieSection"
-                    style="-fx-background-color: transparent; -fx-text-fill: white; -fx-background-radius: 5; -fx-pref-height: 38px; -fx-cursor: hand;"/>
-
-            <Button fx:id="reportsNavBtn" text="Reports" maxWidth="Infinity"
-                    onAction="#showReportsSection"
-                    style="-fx-background-color: transparent; -fx-text-fill: white; -fx-background-radius: 5; -fx-pref-height: 38px; -fx-cursor: hand;"/>
-        </VBox>
-    </left>
-
-    <!-- CENTER CONTENT (StackPane holds all 3 sections, only one visible at a time) -->
     <center>
-        <StackPane>
-
-            <!-- MY LIST SECTION -->
-            <VBox fx:id="myListSection" spacing="10">
-                <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
-
-                <HBox spacing="10" alignment="CENTER_LEFT">
-                    <TextField fx:id="searchField" promptText="Search movies and shows..."
-                               prefWidth="300" onKeyReleased="#handleSearch"/>
-                    <Button fx:id="allFilterButton" text="All" onAction="#handleAllFilter"
-                            style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-cursor: hand;"/>
-                    <Button fx:id="watchedFilterButton" text="Watched" onAction="#handleWatchedFilter"
-                            style="-fx-background-color: #e5e7eb; -fx-cursor: hand;"/>
-                    <Button fx:id="unwatchedFilterButton" text="To Watch" onAction="#handleUnwatchedFilter"
-                            style="-fx-background-color: #e5e7eb; -fx-cursor: hand;"/>
-                </HBox>
-
-                <ListView fx:id="movieListView" VBox.vgrow="ALWAYS"
-                          style="-fx-background-color: transparent;"/>
-            </VBox>
-
-            <!-- ADD MOVIE/SHOW SECTION -->
-            <VBox fx:id="addMovieSection" visible="false" managed="false"
-                  spacing="15" maxWidth="500" alignment="CENTER_LEFT">
-                <padding><Insets top="40" right="60" bottom="40" left="60"/></padding>
-
-                <Label text="Add Movie or Show"
-                       style="-fx-font-size: 22px; -fx-font-weight: bold;"/>
-
-                <VBox spacing="5">
-                    <Label text="Title *" style="-fx-font-weight: bold;"/>
-                    <TextField fx:id="titleField" promptText="Enter title"
-                               style="-fx-pref-height: 38px;"/>
-                </VBox>
-
-                <VBox spacing="5">
-                    <Label text="Year *" style="-fx-font-weight: bold;"/>
-                    <TextField fx:id="yearField" promptText="e.g. 2024"
-                               style="-fx-pref-height: 38px;"/>
-                </VBox>
-
-                <VBox spacing="5">
-                    <Label text="Type" style="-fx-font-weight: bold;"/>
-                    <ComboBox fx:id="typeComboBox" prefWidth="200"
-                              style="-fx-pref-height: 38px;"/>
-                </VBox>
-
-                <VBox spacing="5">
-                    <Label text="Poster URL (optional)" style="-fx-font-weight: bold;"/>
-                    <TextField fx:id="posterField" promptText="https://..."
-                               style="-fx-pref-height: 38px;"/>
-                </VBox>
-
-                <Button text="Add to My List" onAction="#handleAddMovieSubmit"
-                        style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-pref-height: 40px; -fx-pref-width: 200px; -fx-font-size: 14px; -fx-cursor: hand;"/>
-            </VBox>
-
-            <!-- REPORTS SECTION -->
-            <VBox fx:id="reportsSection" visible="false" managed="false" spacing="20">
-                <padding><Insets top="30" right="30" bottom="30" left="30"/></padding>
-
-                <Label text="Reports" style="-fx-font-size: 22px; -fx-font-weight: bold;"/>
-
-                <!-- Stat cards row -->
-                <HBox spacing="15">
-                    <VBox spacing="5" alignment="CENTER"
-                          style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 20;"
-                          HBox.hgrow="ALWAYS">
-                        <Label fx:id="totalCountLabel"
-                               style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-text-fill: #3b82f6;"/>
-                        <Label text="Total Entries" style="-fx-text-fill: gray;"/>
-                    </VBox>
-
-                    <VBox spacing="5" alignment="CENTER"
-                          style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 20;"
-                          HBox.hgrow="ALWAYS">
-                        <Label fx:id="watchedCountLabel"
-                               style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-text-fill: #22c55e;"/>
-                        <Label text="Watched" style="-fx-text-fill: gray;"/>
-                    </VBox>
-
-                    <VBox spacing="5" alignment="CENTER"
-                          style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 20;"
-                          HBox.hgrow="ALWAYS">
-                        <Label fx:id="avgRatingLabel"
-                               style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-text-fill: #f59e0b;"/>
-                        <Label text="Avg Rating" style="-fx-text-fill: gray;"/>
-                    </VBox>
-                </HBox>
-
-                <!-- Highest rated card -->
-                <VBox spacing="8"
-                      style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 20;">
-                    <Label text="Highest Rated"
-                           style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
-                    <Label fx:id="highestRatedLabel" style="-fx-font-size: 16px;"/>
-                </VBox>
-            </VBox>
-
-        </StackPane>
+        <ListView fx:id="movieListView" style="-fx-background-color: transparent;">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+        </ListView>
     </center>
-
 </BorderPane>

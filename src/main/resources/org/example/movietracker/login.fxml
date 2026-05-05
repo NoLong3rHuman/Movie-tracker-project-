@@ -3,6 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
 <VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="org.example.movietracker.LoginController" alignment="CENTER" spacing="20"
@@ -33,13 +34,11 @@
 
         <Button fx:id="loginButton" text="Sign In" maxWidth="Infinity"
                 onAction="#handleLogin"
-                style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-pref-height: 40px; -fx-font-size: 14px; -fx-cursor: hand;"/>
+                style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-pref-height: 40px; -fx-font-size: 14px;"/>
 
         <Separator/>
 
-        <Button text="Don't have an account? Register" maxWidth="Infinity"
-                onAction="#handleRegister"
-                style="-fx-background-color: transparent; -fx-text-fill: #3b82f6; -fx-border-color: #3b82f6; -fx-border-radius: 5; -fx-pref-height: 36px; -fx-cursor: hand;"/>
-
+        <Label text="Demo: Use any email and password to login"
+               style="-fx-text-fill: gray; -fx-font-size: 11px;" alignment="CENTER"/>
     </VBox>
 </VBox>
