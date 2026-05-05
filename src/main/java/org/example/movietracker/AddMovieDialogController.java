@@ -42,6 +42,8 @@ public class AddMovieDialogController {
         }
 
         Movie movie = new Movie(title, year, poster.isEmpty() ? null : poster);
+        MovieDatabase md =  new MovieDatabase();
+        md.insertMovie(movie);
         mainController.addMovie(movie);
         dialogStage.close();
     }

@@ -6,6 +6,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 
+import java.util.List;
+
 public class MainController {
 
     // Header
@@ -60,6 +62,9 @@ public class MainController {
         typeComboBox.setValue("Movie");
 
         loadSampleMovies();
+//        List<Movie> movies = new MovieDatabase().getUserMovies(MovieTrackerApp.getCurrentUser().getId());
+//        allMovies.addAll(movies);
+
 
         movieListView.setCellFactory(param -> new MovieCellController(this));
         movieListView.setItems(filteredMovies);

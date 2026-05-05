@@ -2,14 +2,15 @@ package org.example.movietracker;
 
 import java.security.MessageDigest;
 import java.sql.*;
+import java.util.*;
 
 public class MovieDatabase {
 
     // Embedded Derby — creates a local database folder called "movietrackerdb" on first run.
     // To switch back to Azure, replace these three lines with the MySQL URL, username, and password.
-    final static String DB_URL = "jdbc:derby:movietrackerdb;create=true";
-    final static String USERNAME = "";
-    final static String PASSWORD = "";
+      final static String DB_URL = "jdbc:derby:movietrackerdb;create=true";
+//    final static String USERNAME = "";
+//    final static String PASSWORD = "";
 
     private Connection getConnection() throws SQLException {
         return DriverManager.getConnection(DB_URL);
@@ -35,6 +36,7 @@ public class MovieDatabase {
             createTableSafely(stmt,
                     "CREATE TABLE movies (" +
                     "id INT NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY," +
+                    "user_id INT NOT NULL," +
                     "title VARCHAR(200) NOT NULL," +
                     "year VARCHAR(10)," +
                     "posterUrl VARCHAR(500)," +
@@ -60,6 +62,20 @@ public class MovieDatabase {
             }
         }
     }
+
+    //---------------- TEST CONNECTION
+        public boolean testConnection(){
+            try (Connection conn = getConnection()) {
+                // Check if the connection is valid with a 2-second timeout
+                if (conn != null && conn.isValid(2)) {
+                    System.out.println("Connection test successful.");
+                    return true;
+                }
+            } catch (SQLException e) {
+                System.err.println("Connection test failed: " + e.getMessage());
+            }
+            return false;
+        }
 
     // ---------- PASSWORD HASHING ----------
     private String hashPassword(String password) {
@@ -131,5 +147,48 @@ public class MovieDatabase {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+    //-------------- LOAD MOVIE --------------
+    public List<Movie> loadUserMovies(int userid) {
+        connectToDatabase();
+        List<Movie> movies = new ArrayList<>();
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(
+                     "SELECT * FROM movies WHERE user_id = ?")) {
+            ps.setInt(1, userid);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Movie m = new Movie(
+                        rs.getString("title"),
+                        rs.getString("year"),
+                        rs.getString("posterUrl"),
+                        rs.getString("type"),
+                        rs.getInt("rating"),
+                        rs.getBoolean("watched")
+                );
+                movies.add(m);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return movies;
+    }
+
+    //------------------- GET MOVIES ------------------------
+    public void getMovies(int userid){
+        String sql = "SELECT * FROM movies WHERE user_id = ?";
+        try(Connection conn = getConnection();
+        PreparedStatement pstmt = getConnection().prepareStatement(sql)){
+            pstmt.setInt(1, userid);
+            try(ResultSet rs = pstmt.executeQuery()){
+                
+            }
+
+
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 }
