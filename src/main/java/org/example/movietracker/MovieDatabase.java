@@ -15,17 +15,8 @@ public class MovieDatabase {
         return DriverManager.getConnection(DB_URL);
     }
 
-    // ---------- CONNECTION TEST ----------
-    public boolean testConnection() {
-        try {
-            Connection conn = getConnection();
-            conn.close();
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
+    final static String USERNAME = "pined20";
+    final static String PASSWORD = "Skyluvsme24";
 
     // ---------- INIT TABLES ----------
     // Derby does not support CREATE TABLE IF NOT EXISTS, so we catch the "table already exists" error.
