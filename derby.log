@@ -1,0 +1,13 @@
+----------------------------------------------------------------
+Wed May 06 10:20:32 EDT 2026:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.17.1.0 - (1913217): instance a816c00e-019d-fda9-6d69-0000010ae7c0 
+on database directory /Users/bryanmorel/IdeaProjects/Movie-tracker-project-/movietrackerdb with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@24d46ca6 
+Loaded from file:/Users/bryanmorel/.m2/repository/org/apache/derby/derby/10.17.1.0/derby-10.17.1.0.jar
+java.vendor=Oracle Corporation
+java.runtime.version=26+35-2893
+user.dir=/Users/bryanmorel/IdeaProjects/Movie-tracker-project-
+os.name=Mac OS X
+os.arch=aarch64
+os.version=26.3.1
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''
