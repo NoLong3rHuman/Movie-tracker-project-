@@ -38,7 +38,7 @@ public class MovieCellController extends ListCell<Movie> {
 
         content = new HBox(15);
         content.setPadding(new Insets(10));
-        content.setStyle("-fx-background-color: white; -fx-background-radius: 5;");
+        content.setStyle("-fx-background-color: transparent; -fx-background-radius: 5;");
         content.getChildren().addAll(textBox, spacer, ratingBox, watchedCheckBox, deleteButton);
     }
 
