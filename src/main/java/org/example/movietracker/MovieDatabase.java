@@ -42,7 +42,7 @@ public class MovieDatabase {
                     "posterUrl VARCHAR(500)," +
                     "rating INT," +
                     "watched BOOLEAN" +
-                    ")");
+                    ")" + "genre VARCHAR(100)");
 
             stmt.close();
             conn.close();

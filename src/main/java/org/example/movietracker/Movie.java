@@ -7,6 +7,7 @@ public class Movie {
     private String type; // "Movie" or "Show"
     private int rating;
     private boolean watched;
+    private String genre;
 
     public Movie(String title, String year, String posterUrl) {
         this.title = title;
@@ -35,6 +36,18 @@ public class Movie {
         this.watched = watched;
     }
 
+    public Movie(String title, String year, String posterUrl, String type, int rating, boolean watched, String genre) {
+        this.title = title;
+        this.year = year;
+        this.posterUrl = posterUrl;
+        this.type = type;
+        this.rating = rating;
+        this.watched = watched;
+        this.genre = genre;
+    }
+
+    public String getGenre() {return genre;}
+    public void setGenre(String genre) {this.genre = genre;}
     public String getTitle() { return title; }
     public String getYear() { return year; }
     public String getPosterUrl() { return posterUrl; }
