@@ -48,6 +48,8 @@ public class MainController {
     private String currentFilter = "all";
     @FXML private ComboBox<String> genreFilterComboBox;
     private String currentGenreFilter = "All";
+    @FXML
+    private ComboBox<String> genreComboBox;
 
     private static final String NAV_ACTIVE =
             "-fx-background-color: white; -fx-text-fill: #1e3a5f; -fx-font-weight: bold; -fx-background-radius: 5; -fx-pref-height: 38px; -fx-cursor: hand;";
@@ -85,6 +87,18 @@ public class MainController {
         );
 
         genreFilterComboBox.setValue("All");
+
+        genreComboBox.getItems().addAll(
+                "Action",
+                "Comedy",
+                "Drama",
+                "Horror",
+                "Sci-Fi",
+                "Romance",
+                "Documentary"
+        );
+
+        genreComboBox.setValue("Action");
 
         filterMovies();
     }
@@ -223,6 +237,8 @@ public class MainController {
         String year = yearField.getText().trim();
         String type = typeComboBox.getValue();
         String poster = posterField.getText().trim();
+        String genre = genreComboBox.getValue();
+
 
         if (title.isEmpty() || year.isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -232,13 +248,22 @@ public class MainController {
             return;
         }
 
-        Movie movie = new Movie(title, year, poster.isEmpty() ? null : poster, type, 0, false);
+        Movie movie = new Movie(
+                title,
+                year,
+                poster.isEmpty() ? null : poster,
+                type,
+                0,
+                false,
+                genre
+        );
         addMovie(movie);
 
         titleField.clear();
         yearField.clear();
         typeComboBox.setValue("Movie");
         posterField.clear();
+        genreComboBox.setValue("Action");
 
         showMyListSection();
     }
