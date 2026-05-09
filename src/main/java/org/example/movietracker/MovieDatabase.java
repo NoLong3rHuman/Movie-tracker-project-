@@ -20,18 +20,17 @@ public class MovieDatabase {
     final static String PASSWORD = "Skyluvsme24";
 
     // ---------- INIT TABLES ----------
-    // Derby does not support CREATE TABLE IF NOT EXISTS, so we catch the "table already exists" error.
+
     public void connectToDatabase() {
-        try {
-            Connection conn = getConnection();
+        try (Connection conn = getConnection()) {
             Statement stmt = conn.createStatement();
 
             createTableSafely(stmt,
                     "CREATE TABLE users (" +
-                    "id INT NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY," +
-                    "email VARCHAR(255) NOT NULL UNIQUE," +
-                    "password_hash VARCHAR(64) NOT NULL" +
-                    ")");
+                            "id INT NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY," +
+                            "email VARCHAR(255) NOT NULL UNIQUE," +
+                            "password_hash VARCHAR(64) NOT NULL" +
+                            ")");
 
             createTableSafely(stmt,
                     "CREATE TABLE movies (" +
@@ -44,6 +43,15 @@ public class MovieDatabase {
                             "rating DOUBLE," +
                             "watched BOOLEAN" +
                             ")");
+
+            // Add sort_order column if it doesn't exist yet
+            try {
+                stmt.executeUpdate("ALTER TABLE movies ADD COLUMN sort_order INT DEFAULT 0");
+            } catch (SQLException e) {
+                if (!"X0Y32".equals(e.getSQLState()) && !"42X01".equals(e.getSQLState())) {
+                    e.printStackTrace();
+                }
+            }
 
             System.out.println("Database ready.");
         } catch (SQLException e) {
@@ -146,7 +154,7 @@ public class MovieDatabase {
         List<Movie> movies = new ArrayList<>();
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(
-                     "SELECT * FROM movies WHERE user_id = ?")) {
+                     "SELECT * FROM movies WHERE user_id = ? ORDER BY sort_order DESC")) {
             ps.setInt(1, userid);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -159,6 +167,7 @@ public class MovieDatabase {
                         rs.getBoolean("watched")
                 );
                 m.setId(rs.getInt("id"));
+                m.setSortOrder(rs.getInt("sort_order"));
                 movies.add(m);
             }
         } catch (SQLException e) {
@@ -186,6 +195,7 @@ public class MovieDatabase {
                 }
             }
 
+
             // ---------- DELETE MOVIE ----------
             public void deleteMovie(int movieId) {
                 connectToDatabase();
@@ -198,4 +208,20 @@ public class MovieDatabase {
                     e.printStackTrace();
                 }
             }
+
+    public void saveMovieOrder(List<Movie> movies) {
+        connectToDatabase();
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(
+                     "UPDATE movies SET sort_order=? WHERE id=?")) {
+            for (int i = 0; i < movies.size(); i++) {
+                ps.setInt(1, i);
+                ps.setInt(2, movies.get(i).getId());
+                ps.addBatch();
+            }
+            ps.executeBatch();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
         }

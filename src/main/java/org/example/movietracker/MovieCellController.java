@@ -6,6 +6,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
 
 public class MovieCellController extends ListCell<Movie> {
     private final MainController mainController;
@@ -79,6 +82,41 @@ public class MovieCellController extends ListCell<Movie> {
                 watchedCheckBox,
                 deleteButton
         );
+        setOnDragDetected(event -> {
+            if (getItem() == null) return;
+            Dragboard db = startDragAndDrop(TransferMode.MOVE);
+            ClipboardContent content = new ClipboardContent();
+            content.putString(String.valueOf(getIndex()));
+            db.setContent(content);
+            event.consume();
+        });
+
+        setOnDragOver(event -> {
+            if (event.getGestureSource() != this && event.getDragboard().hasString()) {
+                event.acceptTransferModes(TransferMode.MOVE);
+            }
+            event.consume();
+        });
+
+        setOnDragEntered(event -> {
+            if (event.getGestureSource() != this && event.getDragboard().hasString()) {
+                setStyle("-fx-border-color: #3b82f6; -fx-border-width: 2;");
+            }
+        });
+
+        setOnDragExited(event -> setStyle(""));
+
+        setOnDragDropped(event -> {
+            if (getItem() == null) return;
+            Dragboard db = event.getDragboard();
+            if (db.hasString()) {
+                int fromIndex = Integer.parseInt(db.getString());
+                int toIndex = getIndex();
+                mainController.reorderMovie(fromIndex, toIndex);
+                event.setDropCompleted(true);
+            }
+            event.consume();
+        });
     }
 
 
@@ -111,24 +149,46 @@ public class MovieCellController extends ListCell<Movie> {
                 : "-fx-font-size: 10px; -fx-text-fill: white; -fx-background-color: #3b82f6; -fx-background-radius: 3; -fx-padding: 1 5 1 5;");
 
         ratingBox.getChildren().clear();
-        for (int i = 1; i <= 5; i++) {
-            final int rating = i;
-            Button starButton = new Button(i <= movie.getRating() ? "★" : "☆");
-            starButton.setStyle(i <= movie.getRating()
-                    ? "-fx-background-color: transparent; -fx-text-fill: gold; -fx-font-size: 16px; -fx-cursor: hand;"
-                    : "-fx-background-color: transparent; -fx-text-fill: gray; -fx-font-size: 16px; -fx-cursor: hand;");
-            starButton.setOnAction(e -> movie.setRating(rating));
-            ratingBox.getChildren().add(starButton);
-        }
 
-        watchedCheckBox.setOnAction(null); // clear first to avoid firing during setSelected
+        boolean overScale = movie.getRating() > 10.0;
+        Label ratingLabel = new Label(movie.getRating() > 0 ? (overScale ? movie.getRating() + " 🔥" : movie.getRating() + "/10") : "-/10");
+        ratingLabel.setStyle(overScale
+                ? "-fx-text-fill: #ff4500; -fx-font-size: 14px; -fx-font-weight: bold;"
+                : "-fx-text-fill: gold; -fx-font-size: 14px; -fx-font-weight: bold;");
+
+        Spinner<Double> ratingSpinner = new Spinner<>(
+                new SpinnerValueFactory.DoubleSpinnerValueFactory(0.0, Double.MAX_VALUE, movie.getRating(), 0.5)
+        );
+        ratingSpinner.setEditable(true);
+        ratingSpinner.setPrefWidth(75);
+
+        ratingSpinner.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                movie.setRating(newVal);
+                if (newVal > 10.0) {
+                    ratingLabel.setText(newVal + " 🔥");
+                    ratingLabel.setStyle("-fx-text-fill: #ff4500; -fx-font-size: 14px; -fx-font-weight: bold;");
+                } else {
+                    ratingLabel.setText(newVal + "/10");
+                    ratingLabel.setStyle("-fx-text-fill: gold; -fx-font-size: 14px; -fx-font-weight: bold;");
+                }
+                mainController.updateMovie(movie);
+            }
+        });
+
+        ratingBox.getChildren().addAll(ratingLabel, ratingSpinner);
+
+        watchedCheckBox.setOnAction(null);
         watchedCheckBox.setSelected(movie.isWatched());
-        watchedCheckBox.setOnAction(e -> movie.setWatched(watchedCheckBox.isSelected()));
+        watchedCheckBox.setOnAction(e -> {
+            movie.setWatched(watchedCheckBox.isSelected());
+            mainController.updateMovie(movie);
+        });
 
         deleteButton.setOnAction(e -> mainController.deleteMovie(movie));
 
-        setGraphic(content); // ← Always set at the end of the non-empty path
-        setText(null);       // ← ADD THIS
+        setGraphic(content);
+        setText(null);
     }
     }
 

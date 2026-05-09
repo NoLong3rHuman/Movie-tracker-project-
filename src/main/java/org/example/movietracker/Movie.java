@@ -8,6 +8,9 @@ public class Movie {
     private String type; // "Movie" or "Show"
     private double rating;
     private boolean watched;
+    private int sortOrder;
+
+
 
     public Movie(String title, String year, String posterUrl) {
         this.title = title;
@@ -17,6 +20,8 @@ public class Movie {
         this.rating = 0;
         this.watched = false;
     }
+    public int getSortOrder() { return sortOrder; }
+    public void setSortOrder(int sortOrder) { this.sortOrder = sortOrder; }
 
     public Movie(String title, String year, String posterUrl, double rating, boolean watched) {
         this.title = title;
