@@ -11,40 +11,61 @@ import java.util.List;
 public class MainController {
 
     // Header
-    @FXML private Label emailLabel;
+    @FXML
+    private Label emailLabel;
 
     // Sidebar nav buttons
-    @FXML private Button myListNavBtn;
-    @FXML private Button addMovieNavBtn;
-    @FXML private Button reportsNavBtn;
+    @FXML
+    private Button myListNavBtn;
+    @FXML
+    private Button addMovieNavBtn;
+    @FXML
+    private Button reportsNavBtn;
 
     // Sections
-    @FXML private VBox myListSection;
-    @FXML private VBox addMovieSection;
-    @FXML private VBox reportsSection;
+    @FXML
+    private VBox myListSection;
+    @FXML
+    private VBox addMovieSection;
+    @FXML
+    private VBox reportsSection;
 
     // My List section
-    @FXML private TextField searchField;
-    @FXML private Button allFilterButton;
-    @FXML private Button watchedFilterButton;
-    @FXML private Button unwatchedFilterButton;
-    @FXML private ListView<Movie> movieListView;
+    @FXML
+    private TextField searchField;
+    @FXML
+    private Button allFilterButton;
+    @FXML
+    private Button watchedFilterButton;
+    @FXML
+    private Button unwatchedFilterButton;
+    @FXML
+    private ListView<Movie> movieListView;
 
     // Add Movie/Show section
-    @FXML private TextField titleField;
-    @FXML private TextField yearField;
-    @FXML private ComboBox<String> typeComboBox;
-    @FXML private TextField posterField;
+    @FXML
+    private TextField titleField;
+    @FXML
+    private TextField yearField;
+    @FXML
+    private ComboBox<String> typeComboBox;
+    @FXML
+    private TextField posterField;
 
     // Reports section
-    @FXML private Label totalCountLabel;
-    @FXML private Label watchedCountLabel;
-    @FXML private Label avgRatingLabel;
-    @FXML private Label highestRatedLabel;
+    @FXML
+    private Label totalCountLabel;
+    @FXML
+    private Label watchedCountLabel;
+    @FXML
+    private Label avgRatingLabel;
+    @FXML
+    private Label highestRatedLabel;
 
     private ObservableList<Movie> allMovies;
     private ObservableList<Movie> filteredMovies;
     private String currentFilter = "all";
+    private final MovieDatabase db = new MovieDatabase();
 
     private static final String NAV_ACTIVE =
             "-fx-background-color: white; -fx-text-fill: #1e3a5f; -fx-font-weight: bold; -fx-background-radius: 5; -fx-pref-height: 38px; -fx-cursor: hand;";
@@ -61,14 +82,14 @@ public class MainController {
         typeComboBox.getItems().addAll("Movie", "Show");
         typeComboBox.setValue("Movie");
 
-        loadSampleMovies();
-//        List<Movie> movies = new MovieDatabase().getUserMovies(MovieTrackerApp.getCurrentUser().getId());
-//        allMovies.addAll(movies);
-
-
         movieListView.setCellFactory(param -> new MovieCellController(this));
         movieListView.setItems(filteredMovies);
 
+        List<Movie> movies = db.loadUserMovies(MovieTrackerApp.getCurrentUser().getId());
+        allMovies.addAll(movies);
+
+        currentFilter = "all";
+        updateFilterButtons();
         filterMovies();
     }
 
@@ -150,7 +171,8 @@ public class MainController {
     }
 
     public void addMovie(Movie movie) {
-        allMovies.add(movie);
+        db.insertMovie(MovieTrackerApp.getCurrentUser().getId(), movie);
+        allMovies.setAll(db.loadUserMovies(MovieTrackerApp.getCurrentUser().getId()));
         filterMovies();
     }
 
@@ -158,9 +180,16 @@ public class MainController {
         allMovies.remove(movie);
         filterMovies();
     }
+    public void editMovie(Movie movie) {
+        EditMovie dialog = new EditMovie(movie);
+        dialog.showAndWait().ifPresent(updatedMovie -> {
+            db.updateMovie(movie.getId(), movie);
+            filterMovies();
+        });
+    }
 
     private void filterMovies() {
-        String searchText = searchField.getText().toLowerCase();
+        String searchText = searchField.getText() == null ? "" : searchField.getText().toLowerCase();
         filteredMovies.clear();
 
         for (Movie movie : allMovies) {
@@ -254,25 +283,5 @@ public class MainController {
         } else {
             highestRatedLabel.setText("No rated entries yet.");
         }
-    }
-
-    // ---------- SAMPLE DATA (temporary until DB persistence is wired up) ----------
-
-    private void loadSampleMovies() {
-        Movie m1 = new Movie("The Shawshank Redemption", "1994", null);
-        m1.setRating(5);
-        m1.setWatched(true);
-        allMovies.add(m1);
-
-        Movie m2 = new Movie("The Dark Knight", "2008", null);
-        m2.setRating(4);
-        m2.setWatched(true);
-        allMovies.add(m2);
-
-        Movie m3 = new Movie("Inception", "2010", null);
-        allMovies.add(m3);
-
-        Movie m4 = new Movie("Breaking Bad", "2008", null, "Show", 5, true);
-        allMovies.add(m4);
     }
 }

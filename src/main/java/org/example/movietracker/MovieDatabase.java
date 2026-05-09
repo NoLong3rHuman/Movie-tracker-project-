@@ -35,19 +35,17 @@ public class MovieDatabase {
 
             createTableSafely(stmt,
                     "CREATE TABLE movies (" +
-                    "id INT NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY," +
-                    "user_id INT NOT NULL," +
-                    "title VARCHAR(200) NOT NULL," +
-                    "year VARCHAR(10)," +
-                    "posterUrl VARCHAR(500)," +
-                    "rating INT," +
-                    "watched BOOLEAN" +
-                    ")");
+                            "id INT NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY," +
+                            "user_id INT NOT NULL," +
+                            "title VARCHAR(200) NOT NULL," +
+                            "\"year\" VARCHAR(10)," +
+                            "posterUrl VARCHAR(500)," +
+                            "\"type\" VARCHAR(10)," +
+                            "rating DOUBLE," +
+                            "watched BOOLEAN" +
+                            ")");
 
-            stmt.close();
-            conn.close();
             System.out.println("Database ready.");
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -64,33 +62,26 @@ public class MovieDatabase {
     }
 
     //---------------- TEST CONNECTION
-        public boolean testConnection(){
+        public boolean testConnection() {
             try (Connection conn = getConnection()) {
-                // Check if the connection is valid with a 2-second timeout
-                if (conn != null && conn.isValid(2)) {
-                    System.out.println("Connection test successful.");
-                    return true;
-                }
+                return conn != null && conn.isValid(2);
             } catch (SQLException e) {
                 System.err.println("Connection test failed: " + e.getMessage());
+                return false;
             }
-            return false;
         }
-
     // ---------- PASSWORD HASHING ----------
-    private String hashPassword(String password) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            byte[] hash = md.digest(password.getBytes("UTF-8"));
-            StringBuilder hex = new StringBuilder();
-            for (byte b : hash) {
-                hex.append(String.format("%02x", b));
+        private String hashPassword(String password) {
+            try {
+                MessageDigest md = MessageDigest.getInstance("SHA-256");
+                byte[] hash = md.digest(password.getBytes("UTF-8"));
+                StringBuilder hex = new StringBuilder();
+                for (byte b : hash) hex.append(String.format("%02x", b));
+                return hex.toString();
+            } catch (Exception e) {
+                throw new RuntimeException("Password hashing failed", e);
             }
-            return hex.toString();
-        } catch (Exception e) {
-            throw new RuntimeException("Password hashing failed", e);
         }
-    }
 
     // ---------- REGISTER USER ----------
     // Returns: 1 = success, 0 = email already taken, -1 = DB error
@@ -132,18 +123,19 @@ public class MovieDatabase {
     }
 
     // ---------- INSERT MOVIE ----------
-    public void insertMovie(Movie movie) {
+    public void insertMovie(int userId, Movie movie) {
         connectToDatabase();
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(
-                     "INSERT INTO movies (title, year, posterUrl, rating, watched) VALUES (?, ?, ?, ?, ?)")) {
-            ps.setString(1, movie.getTitle());
-            ps.setString(2, movie.getYear());
-            ps.setString(3, movie.getPosterUrl());
-            ps.setInt(4, movie.getRating());
-            ps.setBoolean(5, movie.isWatched());
+                     "INSERT INTO movies (user_id, title, \"year\", posterUrl, \"type\", rating, watched) VALUES (?, ?, ?, ?, ?, ?, ?)")) {
+            ps.setInt(1, userId);           // user_id  (INTEGER)
+            ps.setString(2, movie.getTitle());  // title
+            ps.setString(3, movie.getYear());   // year
+            ps.setString(4, movie.getPosterUrl()); // posterUrl
+            ps.setString(5, movie.getType());   // type
+            ps.setDouble(6, movie.getRating()); // rating
+            ps.setBoolean(7, movie.isWatched()); // watched
             ps.executeUpdate();
-            System.out.println("Movie inserted!");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -166,6 +158,7 @@ public class MovieDatabase {
                         rs.getInt("rating"),
                         rs.getBoolean("watched")
                 );
+                m.setId(rs.getInt("id"));
                 movies.add(m);
             }
         } catch (SQLException e) {
@@ -174,21 +167,35 @@ public class MovieDatabase {
         return movies;
     }
 
-    //------------------- GET MOVIES ------------------------
-    public void getMovies(int userid){
-        String sql = "SELECT * FROM movies WHERE user_id = ?";
-        try(Connection conn = getConnection();
-        PreparedStatement pstmt = getConnection().prepareStatement(sql)){
-            pstmt.setInt(1, userid);
-            try(ResultSet rs = pstmt.executeQuery()){
-                
+            // ---------- UPDATE MOVIE ----------
+            public void updateMovie(int movieId, Movie movie) {
+                connectToDatabase();
+                try (Connection conn = getConnection();
+                     PreparedStatement ps = conn.prepareStatement(
+                             "UPDATE movies SET title=?, \"year\"=?, posterUrl=?, \"type\"=?, rating=?, watched=? WHERE id=?")) {
+                    ps.setString(1, movie.getTitle());
+                    ps.setString(2, movie.getYear());
+                    ps.setString(3, movie.getPosterUrl());
+                    ps.setString(4, movie.getType());
+                    ps.setDouble(5, movie.getRating());
+                    ps.setBoolean(6, movie.isWatched());
+                    ps.setInt(7, movieId);
+                    ps.executeUpdate();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
 
-
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+            // ---------- DELETE MOVIE ----------
+            public void deleteMovie(int movieId) {
+                connectToDatabase();
+                try (Connection conn = getConnection();
+                     PreparedStatement ps = conn.prepareStatement(
+                             "DELETE FROM movies WHERE id=?")) {
+                    ps.setInt(1, movieId);
+                    ps.executeUpdate();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
-
-    }
-}

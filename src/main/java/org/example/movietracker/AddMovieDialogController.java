@@ -29,9 +29,9 @@ public class AddMovieDialogController {
 
     @FXML
     private void handleAdd() {
-        String title = titleField.getText();
-        String year = yearField.getText();
-        String poster = posterField.getText();
+        String title = titleField.getText().trim();
+        String year = yearField.getText().trim();
+        String poster = posterField.getText().trim();
 
         if (title.isEmpty() || year.isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -42,8 +42,6 @@ public class AddMovieDialogController {
         }
 
         Movie movie = new Movie(title, year, poster.isEmpty() ? null : poster);
-        MovieDatabase md =  new MovieDatabase();
-        md.insertMovie(movie);
         mainController.addMovie(movie);
         dialogStage.close();
     }
