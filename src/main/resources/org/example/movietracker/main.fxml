@@ -8,6 +8,8 @@
             fx:controller="org.example.movietracker.MainController"
             style="-fx-background-color: #f9fafb;">
 
+
+
     <!-- TOP HEADER -->
     <top>
         <HBox alignment="CENTER_LEFT" spacing="15"
@@ -61,6 +63,9 @@
                             style="-fx-background-color: #e5e7eb; -fx-cursor: hand;"/>
                     <Button fx:id="unwatchedFilterButton" text="To Watch" onAction="#handleUnwatchedFilter"
                             style="-fx-background-color: #e5e7eb; -fx-cursor: hand;"/>
+                    <ComboBox fx:id="genreFilterComboBox"
+                              promptText="Filter by Genre"
+                              onAction="#handleGenreFilter" />
                 </HBox>
 
                 <ListView fx:id="movieListView" VBox.vgrow="ALWAYS"
@@ -92,6 +97,13 @@
                     <ComboBox fx:id="typeComboBox" prefWidth="200"
                               style="-fx-pref-height: 38px;"/>
                 </VBox>
+
+                <VBox spacing="5">
+                    <Label text="Genre" style="-fx-font-weight: bold;"/>
+                    <ComboBox fx:id="genreComboBox"
+                              promptText="Select Genre"/>
+                </VBox>
+
 
                 <VBox spacing="5">
                     <Label text="Poster URL (optional)" style="-fx-font-weight: bold;"/>

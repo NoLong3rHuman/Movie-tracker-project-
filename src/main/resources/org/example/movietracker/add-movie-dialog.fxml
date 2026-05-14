@@ -3,6 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.control.ComboBox?>
 
 <VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="org.example.movietracker.AddMovieDialogController" spacing="15"
@@ -19,10 +20,15 @@
         <Label text="Year *" style="-fx-font-weight: bold;"/>
         <TextField fx:id="yearField" promptText="e.g., 2024"/>
     </VBox>
+    <VBox spacing="5">
+        <ComboBox fx:id="genreComboBox"
+                  promptText="Select Genre"/>
+    </VBox>
 
     <VBox spacing="5">
         <Label text="Poster URL (optional)" style="-fx-font-weight: bold;"/>
         <TextField fx:id="posterField" promptText="https://example.com/poster.jpg"/>
+
     </VBox>
 
     <HBox spacing="10" alignment="CENTER_RIGHT">

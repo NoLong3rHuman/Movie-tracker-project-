@@ -44,12 +44,18 @@ public class MainController {
 
     private ObservableList<Movie> allMovies;
     private ObservableList<Movie> filteredMovies;
+
     private String currentFilter = "all";
+    @FXML private ComboBox<String> genreFilterComboBox;
+    private String currentGenreFilter = "All";
+    @FXML
+    private ComboBox<String> genreComboBox;
 
     private static final String NAV_ACTIVE =
             "-fx-background-color: white; -fx-text-fill: #1e3a5f; -fx-font-weight: bold; -fx-background-radius: 5; -fx-pref-height: 38px; -fx-cursor: hand;";
     private static final String NAV_INACTIVE =
             "-fx-background-color: transparent; -fx-text-fill: white; -fx-background-radius: 5; -fx-pref-height: 38px; -fx-cursor: hand;";
+
 
     @FXML
     public void initialize() {
@@ -68,6 +74,31 @@ public class MainController {
 
         movieListView.setCellFactory(param -> new MovieCellController(this));
         movieListView.setItems(filteredMovies);
+
+        genreFilterComboBox.getItems().addAll(
+                "All",
+                "Action",
+                "Comedy",
+                "Drama",
+                "Horror",
+                "Sci-Fi",
+                "Romance",
+                "Documentary"
+        );
+
+        genreFilterComboBox.setValue("All");
+
+        genreComboBox.getItems().addAll(
+                "Action",
+                "Comedy",
+                "Drama",
+                "Horror",
+                "Sci-Fi",
+                "Romance",
+                "Documentary"
+        );
+
+        genreComboBox.setValue("Action");
 
         filterMovies();
     }
@@ -149,6 +180,13 @@ public class MainController {
         filterMovies();
     }
 
+
+    @FXML
+    private void handleGenreFilter() {
+        currentGenreFilter = genreFilterComboBox.getValue();
+        filterMovies();
+    }
+
     public void addMovie(Movie movie) {
         allMovies.add(movie);
         filterMovies();
@@ -170,7 +208,10 @@ public class MainController {
                     (currentFilter.equals("watched") && movie.isWatched()) ||
                     (currentFilter.equals("unwatched") && !movie.isWatched());
 
-            if (matchesSearch && matchesFilter) {
+            boolean matchesGenre = currentGenreFilter.equals("All") ||
+                    (movie.getGenre() != null && movie.getGenre().equals(currentGenreFilter));
+
+            if (matchesSearch && matchesFilter && matchesGenre) {
                 filteredMovies.add(movie);
             }
         }
@@ -196,6 +237,8 @@ public class MainController {
         String year = yearField.getText().trim();
         String type = typeComboBox.getValue();
         String poster = posterField.getText().trim();
+        String genre = genreComboBox.getValue();
+
 
         if (title.isEmpty() || year.isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -205,13 +248,22 @@ public class MainController {
             return;
         }
 
-        Movie movie = new Movie(title, year, poster.isEmpty() ? null : poster, type, 0, false);
+        Movie movie = new Movie(
+                title,
+                year,
+                poster.isEmpty() ? null : poster,
+                type,
+                0,
+                false,
+                genre
+        );
         addMovie(movie);
 
         titleField.clear();
         yearField.clear();
         typeComboBox.setValue("Movie");
         posterField.clear();
+        genreComboBox.setValue("Action");
 
         showMyListSection();
     }
@@ -274,5 +326,8 @@ public class MainController {
 
         Movie m4 = new Movie("Breaking Bad", "2008", null, "Show", 5, true);
         allMovies.add(m4);
+
+        Movie m5 = new Movie("The Lord of the Rings", "2007", null, "Show", 5, true, "Sci-Fi");
+        allMovies.add(m5);
     }
 }
