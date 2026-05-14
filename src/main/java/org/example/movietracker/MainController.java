@@ -6,46 +6,68 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainController {
 
     // Header
-    @FXML private Label emailLabel;
+    @FXML
+    private Label emailLabel;
 
     // Sidebar nav buttons
-    @FXML private Button myListNavBtn;
-    @FXML private Button addMovieNavBtn;
-    @FXML private Button reportsNavBtn;
+    @FXML
+    private Button myListNavBtn;
+    @FXML
+    private Button addMovieNavBtn;
+    @FXML
+    private Button reportsNavBtn;
 
     // Sections
-    @FXML private VBox myListSection;
-    @FXML private VBox addMovieSection;
-    @FXML private VBox reportsSection;
+    @FXML
+    private VBox myListSection;
+    @FXML
+    private VBox addMovieSection;
+    @FXML
+    private VBox reportsSection;
 
     // My List section
-    @FXML private TextField searchField;
-    @FXML private Button allFilterButton;
-    @FXML private Button watchedFilterButton;
-    @FXML private Button unwatchedFilterButton;
-    @FXML private ListView<Movie> movieListView;
+    @FXML
+    private TextField searchField;
+    @FXML
+    private Button allFilterButton;
+    @FXML
+    private Button watchedFilterButton;
+    @FXML
+    private Button unwatchedFilterButton;
+    @FXML
+    private ListView<Movie> movieListView;
 
     // Add Movie/Show section
-    @FXML private TextField titleField;
-    @FXML private TextField yearField;
-    @FXML private ComboBox<String> typeComboBox;
-    @FXML private TextField posterField;
+    @FXML
+    private TextField titleField;
+    @FXML
+    private TextField yearField;
+    @FXML
+    private ComboBox<String> typeComboBox;
+    @FXML
+    private TextField posterField;
 
     // Reports section
-    @FXML private Label totalCountLabel;
-    @FXML private Label watchedCountLabel;
-    @FXML private Label avgRatingLabel;
-    @FXML private Label highestRatedLabel;
+    @FXML
+    private Label totalCountLabel;
+    @FXML
+    private Label watchedCountLabel;
+    @FXML
+    private Label avgRatingLabel;
+    @FXML
+    private Label highestRatedLabel;
 
     private ObservableList<Movie> allMovies;
     private ObservableList<Movie> filteredMovies;
 
     private String currentFilter = "all";
+    private final MovieDatabase db = new MovieDatabase();
     @FXML private ComboBox<String> genreFilterComboBox;
     private String currentGenreFilter = "All";
     @FXML
@@ -67,14 +89,14 @@ public class MainController {
         typeComboBox.getItems().addAll("Movie", "Show");
         typeComboBox.setValue("Movie");
 
-        loadSampleMovies();
-//        List<Movie> movies = new MovieDatabase().getUserMovies(MovieTrackerApp.getCurrentUser().getId());
-//        allMovies.addAll(movies);
-
-
         movieListView.setCellFactory(param -> new MovieCellController(this));
         movieListView.setItems(filteredMovies);
 
+        List<Movie> movies = db.loadUserMovies(MovieTrackerApp.getCurrentUser().getId());
+        allMovies.addAll(movies);
+
+        currentFilter = "all";
+        updateFilterButtons();
         genreFilterComboBox.getItems().addAll(
                 "All",
                 "Action",
@@ -188,8 +210,13 @@ public class MainController {
     }
 
     public void addMovie(Movie movie) {
-        allMovies.add(movie);
+        db.insertMovie(MovieTrackerApp.getCurrentUser().getId(), movie);
+        allMovies.setAll(db.loadUserMovies(MovieTrackerApp.getCurrentUser().getId()));
         filterMovies();
+    }
+
+    public void saveMovieOrder(List<Movie> movies) {
+        db.saveMovieOrder(movies);
     }
 
     public void deleteMovie(Movie movie) {
@@ -197,8 +224,27 @@ public class MainController {
         filterMovies();
     }
 
+    public void updateMovie(Movie movie) {
+        db.updateMovie(movie.getId(), movie);
+    }
+    public void editMovie(Movie movie) {
+        EditMovie dialog = new EditMovie(movie);
+        dialog.showAndWait().ifPresent(updatedMovie -> {
+            db.updateMovie(movie.getId(), movie);
+            filterMovies();
+        });
+    }
+
+    public void reorderMovie(int fromIndex, int toIndex) {
+        if (fromIndex < 0 || toIndex < 0 || fromIndex >= allMovies.size() || toIndex >= allMovies.size()) return;
+        Movie movie = allMovies.remove(fromIndex);
+        allMovies.add(toIndex, movie);
+        filterMovies();
+        db.saveMovieOrder(new ArrayList<>(allMovies));
+    }
+
     private void filterMovies() {
-        String searchText = searchField.getText().toLowerCase();
+        String searchText = searchField.getText() == null ? "" : searchField.getText().toLowerCase();
         filteredMovies.clear();
 
         for (Movie movie : allMovies) {
@@ -273,17 +319,22 @@ public class MainController {
     private void updateReports() {
         int total = allMovies.size();
         int watched = 0;
-        int totalRating = 0;
+        double totalRating = 0;
         int ratedCount = 0;
-        Movie highestRated = null;
+        List<Movie> highestRated = new ArrayList<>();
+        double topRating = 0;
 
         for (Movie movie : allMovies) {
             if (movie.isWatched()) watched++;
             if (movie.getRating() > 0) {
                 totalRating += movie.getRating();
                 ratedCount++;
-                if (highestRated == null || movie.getRating() > highestRated.getRating()) {
-                    highestRated = movie;
+                if (movie.getRating() > topRating) {
+                    topRating = movie.getRating();
+                    highestRated.clear();
+                    highestRated.add(movie);
+                } else if (movie.getRating() == topRating) {
+                    highestRated.add(movie);
                 }
             }
         }
@@ -292,23 +343,26 @@ public class MainController {
         watchedCountLabel.setText(String.valueOf(watched));
 
         if (ratedCount > 0) {
-            double avg = (double) totalRating / ratedCount;
+            double avg = totalRating / ratedCount;
             avgRatingLabel.setText(String.format("%.1f", avg));
         } else {
             avgRatingLabel.setText("-");
         }
 
-        if (highestRated != null) {
-            StringBuilder stars = new StringBuilder();
-            for (int i = 0; i < highestRated.getRating(); i++) stars.append("★");
-            highestRatedLabel.setText(
-                    highestRated.getTitle() + " (" + highestRated.getYear() + ")  " + stars);
+        if (!highestRated.isEmpty()) {
+            StringBuilder sb = new StringBuilder();
+            for (Movie m : highestRated) {
+                if (sb.length() > 0) sb.append("\n");
+                sb.append(m.getTitle()).append(" (").append(m.getYear()).append(")");
+            }
+            sb.append("  —  ").append(topRating).append("/10");
+            highestRatedLabel.setText(sb.toString());
         } else {
             highestRatedLabel.setText("No rated entries yet.");
         }
+        }
     }
 
-    // ---------- SAMPLE DATA (temporary until DB persistence is wired up) ----------
 
     private void loadSampleMovies() {
         Movie m1 = new Movie("The Shawshank Redemption", "1994", null);
