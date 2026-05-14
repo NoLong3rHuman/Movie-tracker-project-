@@ -364,24 +364,6 @@ public class MainController {
     }
 
 
-    private void loadSampleMovies() {
-        Movie m1 = new Movie("The Shawshank Redemption", "1994", null);
-        m1.setRating(5);
-        m1.setWatched(true);
-        allMovies.add(m1);
 
-        Movie m2 = new Movie("The Dark Knight", "2008", null);
-        m2.setRating(4);
-        m2.setWatched(true);
-        allMovies.add(m2);
 
-        Movie m3 = new Movie("Inception", "2010", null);
-        allMovies.add(m3);
 
-        Movie m4 = new Movie("Breaking Bad", "2008", null, "Show", 5, true);
-        allMovies.add(m4);
-
-        Movie m5 = new Movie("The Lord of the Rings", "2007", null, "Show", 5, true, "Sci-Fi");
-        allMovies.add(m5);
-    }
-}
