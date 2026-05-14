@@ -10,6 +10,8 @@ public class AddMovieDialogController {
     @FXML private TextField posterField;
     @FXML private Button cancelButton;
     @FXML private Button addButton;
+    @FXML
+    private ComboBox<String> genreComboBox;
 
     private Stage dialogStage;
     private MainController mainController;
@@ -45,4 +47,6 @@ public class AddMovieDialogController {
         mainController.addMovie(movie);
         dialogStage.close();
     }
+
+
 }

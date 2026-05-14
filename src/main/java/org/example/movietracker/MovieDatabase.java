@@ -52,6 +52,18 @@ public class MovieDatabase {
                     e.printStackTrace();
                 }
             }
+                    "id INT NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY," +
+                    "user_id INT NOT NULL," +
+                    "title VARCHAR(200) NOT NULL," +
+                    "year VARCHAR(10)," +
+                    "posterUrl VARCHAR(500)," +
+                    "rating INT," +
+                    "watched BOOLEAN" +
+                    ")" + "genre VARCHAR(100)");
+
+            stmt.close();
+            conn.close();
+            System.out.println("Database ready.");
 
             System.out.println("Database ready.");
         } catch (SQLException e) {
